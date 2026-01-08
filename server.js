@@ -283,26 +283,26 @@ app.post('/api/session/create', async (req, res) => {
       client.on('qr', async (qr) => {
         const qrImage = await qrcode.toDataURL(qr);
         client.qrCode = qrImage;
-        console.log(✅ QR Code جاهز للمستخدم: ${userId});
+        console.log('QR Code ready for user:', userId);
       });
 
       client.on('ready', async () => {
-        console.log(✅ العميل جاهز: ${userId});
+        console.log('Client ready:', userId);
         session.isActive = true;
         session.lastActivity = new Date();
         await session.save();
       });
 
       client.on('authenticated', () => {
-        console.log(✅ تمت المصادقة: ${userId});
+        console.log('Authenticated:', userId);
       });
 
       client.on('auth_failure', () => {
-        console.log(❌ فشلت المصادقة: ${userId});
+        console.log('Authentication failed:', userId);
       });
 
       client.on('disconnected', async () => {
-        console.log(⚠️ تم قطع الاتصال: ${userId});
+        console.log('Disconnected:', userId);
         session.isActive = false;
         await session.save();
         clients.delete(userId);
@@ -317,7 +317,7 @@ app.post('/api/session/create', async (req, res) => {
         message: 'تم إنشاء الجلسة',
         needsQR: true,
         sessionId: userId,
-        qrUrl: /qr/${userId}
+        qrUrl: `/qr/${userId}`
       });
     }
 
@@ -327,7 +327,7 @@ app.post('/api/session/create', async (req, res) => {
         message: 'الجلسة موجودة',
         needsQR: true,
         sessionId: userId,
-        qrUrl: /qr/${userId}
+        qrUrl: `/qr/${userId}`
       });
     }
 
@@ -423,7 +423,7 @@ app.post('/api/messages/send', async (req, res) => {
         sentToday: session.messagesSentToday,
         limit: DAILY_LIMIT,
         remaining: remaining,
-        suggestion: يمكنك إرسال ${remaining} رسالة فقط اليوم
+        suggestion: `يمكنك إرسال ${remaining} رسالة فقط اليوم`
       });
     }
 
@@ -506,5 +506,6 @@ app.post('/api/session/logout', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(🚀 السيرفر يعمل على المنفذ ${PORT});
-  console.log(🌐 الرابط: http://localhost:${PORT});
+  console.log('Server is running on port', PORT);
+  console.log('URL: http://localhost:' + PORT);
+});
